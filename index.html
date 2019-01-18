@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Graph Editor</title>
+    <meta charset="utf-8">
+
+    <!-- Browserify Libraries -->
+    <script src="node_modules/the-graph/dist/vendor.js"></script>
+    <script src="node_modules/the-graph/dist/the-graph.js"></script>
+
+    <script src="node_modules/material-components-web/dist/material-components-web.min.js"></script>
+
+    <link rel="stylesheet" href="node_modules/the-graph/themes/the-graph-dark.css">
+    <link rel="stylesheet" href="node_modules/the-graph/themes/the-graph-light.css">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400' rel='stylesheet' type='text/css'>
+    <style>
+      @font-face {
+        /* we want the svg version */
+        font-family: 'FontAwesomeSVG';
+        src: url('node_modules/font-awesome/fonts/fontawesome-webfont.svg?v=4.0.3#fontawesomeregular') format('svg'),
+          url('node_modules/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.0.3') format('embedded-opentype'), 
+          url('node_modules/font-awesome/fonts/fontawesome-webfont.woff?v=4.0.3') format('woff'), 
+          url('node_modules/font-awesome/fonts/fontawesome-webfont.ttf?v=4.0.3') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="node_modules/material-components-web/dist/material-components-web.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        font-family: "SourceCodePro",Helvetica,Arial,sans-serif;
+        overflow: hidden;
+      }
+	  .drawer-frame-root {
+		height: 100vh;
+		display: flex;
+	  }
+	  .mdc-dialog__title+.mdc-dialog__content {
+	    padding-top: 5px;
+	  }
+	  .mdc-text-field {
+	      width: 100%;
+	      margin-top: 5px;
+	  }
+    </style>
+
+</head>
+<body>
+
+<div id="root">
+    <div class="drawer-frame-root">
+        <div class="drawer-frame-app-content">
+            <div class="drawer-main-content" id="editor">
+            </div>
+        </div>
+
+        <aside class="mdc-drawer">
+            <div class="mdc-drawer__content">
+                <nav id="components-list" class="mdc-list">
+                </nav>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<div id="edit-component-dialog"
+     class="mdc-dialog"
+     role="alertdialog"
+     aria-modal="true"
+     aria-labelledby="edit-component-dialog-title"
+     aria-describedby="edit-component-dialog-content"
+>
+    <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+            <h2 class="mdc-dialog__title" id="edit-component-dialog-title"></h2>
+            <div class="mdc-dialog__content" id="edit-component-dialog-content">
+
+                <!--div id="componentLabel" class="mdc-text-field mdc-text-field--outlined">
+                    <input type="text" id="tf-outlined" class="mdc-text-field__input">
+
+                    <div class="mdc-notched-outline">
+                        <div class="mdc-notched-outline__leading"></div>
+                        <div class="mdc-notched-outline__notch"><label for="tf-outlined" class="mdc-floating-label">Label</label></div>
+                        <div class="mdc-notched-outline__trailing"></div>
+                    </div>
+                </div-->
+
+
+            </div>
+            <footer class="mdc-dialog__actions">
+                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
+                    <span class="mdc-button__label">Cancel</span>
+                </button>
+                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
+                    <span class="mdc-button__label">OK</span>
+                </button>
+            </footer>
+        </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+</div>
+
+<!--div id="loading" style="position:absolute; top:10px; left:10px; background-color:white; padding:10px; border-radius:5px;">
+  <img src="loading.gif"/>
+  <div id="loading-message">loading custom elements...</div>
+</div-->
+
+<script src="index.js"></script>
+
+</body>
+</html>
