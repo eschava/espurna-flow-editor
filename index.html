@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Graph Editor</title>
+    <title>Espurna flow editor</title>
     <meta charset="utf-8">
 
     <!-- Browserify Libraries -->
@@ -52,6 +52,15 @@
 	      width: 100%;
 	      margin-top: 5px;
 	  }
+	  .mdc-drawer__content{
+	    display:flex;
+	  }
+	  nav {
+	    display:flex;
+	    flex-direction:column;
+	    justify-content:space-between;
+	    flex:1;
+	  }
     </style>
 
 </head>
@@ -66,7 +75,41 @@
 
         <aside class="mdc-drawer">
             <div class="mdc-drawer__content">
-                <nav id="components-list" class="mdc-list">
+                <nav class="mdc-list">
+                    <div id="components-list">
+                    </div>
+                    <ul>
+                        <hr class="mdc-list-divider"/>
+                        <li class="mdc-list-item" id="import-flow-button">
+                            <span class="mdc-list-item__graphic fa fa-arrow-right" aria-selected="true" tabindex="0"></span>
+                            <span class="mdc-list-item__text">Import flow</span>
+                        </li>
+                        <li class="mdc-list-item" id="export-flow-button">
+                            <span class="mdc-list-item__graphic fa fa-arrow-left" aria-selected="true" tabindex="0"></span>
+                            <span class="mdc-list-item__text">Export flow</span>
+                        </li>
+                        <li id="espurnaHost" class="mdc-text-field mdc-text-field--outlined">
+                            <input type="text" id="espurnaHostInput" class="mdc-text-field__input">
+
+                            <div class="mdc-notched-outline">
+                                <div class="mdc-notched-outline__leading"></div>
+                                <div class="mdc-notched-outline__notch"><label for="espurnaHostInput" class="mdc-floating-label">Host</label></div>
+                                <div class="mdc-notched-outline__trailing"></div>
+                            </div>
+                        </li>
+                        <li class="mdc-list-item" id="load-flow-button">
+                            <span class="mdc-list-item__graphic fa fa-download" aria-selected="true" tabindex="0"></span>
+                            <span class="mdc-list-item__text">Load flow</span>
+                        </li>
+                        <li class="mdc-list-item" id="save-flow-button">
+                            <span class="mdc-list-item__graphic fa fa-upload" aria-selected="true" tabindex="0"></span>
+                            <span class="mdc-list-item__text">Save flow</span>
+                        </li>
+                        <li class="mdc-list-item" id="restart-button">
+                            <span class="mdc-list-item__graphic fa fa-power-off" aria-selected="true" tabindex="0"></span>
+                            <span class="mdc-list-item__text">Restart</span>
+                        </li>
+                    </ul>
                 </nav>
             </div>
         </aside>
@@ -110,12 +153,80 @@
     <div class="mdc-dialog__scrim"></div>
 </div>
 
-<!--div id="loading" style="position:absolute; top:10px; left:10px; background-color:white; padding:10px; border-radius:5px;">
+<div id="import-flow-dialog"
+     class="mdc-dialog"
+     role="alertdialog"
+     aria-modal="true"
+     aria-labelledby="import-flow-dialog-title"
+     aria-describedby="import-flow-dialog-content"
+>
+    <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+            <h2 class="mdc-dialog__title" id="import-flow-dialog-title"></h2>
+            <div class="mdc-dialog__content" id="import-flow-dialog-content">
+                <div id="import-flow-text-div" class="mdc-text-field mdc-text-field--textarea mdc-text-field--fullwidth">
+                    <textarea id="import-flow-text" class="mdc-text-field__input" rows="8" cols="100"></textarea>
+                    <div class="mdc-notched-outline">
+                        <div class="mdc-notched-outline__leading"></div>
+                        <div class="mdc-notched-outline__notch">
+                            <label for="import-flow-text" class="mdc-floating-label">Flow</label>
+                        </div>
+                        <div class="mdc-notched-outline__trailing"></div>
+                    </div>
+                </div>
+            </div>
+            <footer class="mdc-dialog__actions">
+                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
+                    <span class="mdc-button__label">Cancel</span>
+                </button>
+                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
+                    <span class="mdc-button__label">Import</span>
+                </button>
+            </footer>
+        </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+</div>
+
+<div id="export-flow-dialog"
+     class="mdc-dialog"
+     role="alertdialog"
+     aria-modal="true"
+     aria-labelledby="import-flow-dialog-title"
+     aria-describedby="import-flow-dialog-content"
+>
+    <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+            <h2 class="mdc-dialog__title" id="export-flow-dialog-title"></h2>
+            <div class="mdc-dialog__content" id="export-flow-dialog-content">
+                <div id="export-flow-text-div" class="mdc-text-field mdc-text-field--textarea mdc-text-field--fullwidth">
+                    <textarea id="export-flow-text" class="mdc-text-field__input" rows="8" cols="100"></textarea>
+                    <div class="mdc-notched-outline">
+                        <div class="mdc-notched-outline__leading"></div>
+                        <div class="mdc-notched-outline__notch">
+                            <label for="import-flow-text" class="mdc-floating-label">Flow</label>
+                        </div>
+                        <div class="mdc-notched-outline__trailing"></div>
+                    </div>
+                </div>
+            </div>
+            <footer class="mdc-dialog__actions">
+                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
+                    <span class="mdc-button__label">Close</span>
+                </button>
+            </footer>
+        </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+</div>
+
+<div id="loading" style="position:absolute; top:10px; left:10px; background-color:white; padding:10px; border-radius:5px; display:none; ">
   <img src="loading.gif"/>
   <div id="loading-message">loading custom elements...</div>
-</div-->
+</div>
 
-<script src="index.js"></script>
+<script src="graph.js"></script>
+<script src="espurna.js"></script>
 
 </body>
 </html>

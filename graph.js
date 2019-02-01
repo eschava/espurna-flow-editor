@@ -13,11 +13,11 @@ editComponentDialog.listen('MDCDialog:closed', (event) => {
 });
 
 function addNode() {
-    var component = Object.keys(library)[componentList.selectedIndex];
+    var component = Object.keys(appState.library)[componentList.selectedIndex];
 
     var id = Math.round(Math.random() * 100000).toString(36);
     var metadata = {
-        label: component + '#' + id,
+        label: component,
         x: 100,
         y: 100
     };
@@ -26,7 +26,7 @@ function addNode() {
 
 var editedItem;
 function editNode(graph, itemKey, item) {
-    var component = library[item.component];
+    var component = appState.library[item.component];
 
     document.getElementById('edit-component-dialog-title').innerHTML = item.metadata.label;
 
@@ -39,7 +39,7 @@ function editNode(graph, itemKey, item) {
     for (var i = 0; i < component.properties.length; i++) {
         var property = component.properties[i];
         var input = addInput(dialogContent, property.name, 'componentProperty-' + property.name, property.type);
-        input.value = item.properties ? item.properties[property] : '';
+        input.value = item.metadata.properties ? item.metadata.properties[property.name] : '';
     }
 
     editedItem = item;
@@ -47,15 +47,16 @@ function editNode(graph, itemKey, item) {
 }
 
 function updateNode() {
-    var component = library[editedItem.component];
-    if (!editedItem.properties) editedItem.properties = {};
+    var component = appState.library[editedItem.component];
+    var properties = editedItem.metadata.properties
+    if (!properties) properties = editedItem.metadata.properties = {};
 
     editedItem.metadata.label = document.getElementById('componentLabel').value;
 
     for (var i = 0; i < component.properties.length; i++) {
-        var property = component.properties[i];
-        var input = document.getElementById('componentProperty-' + property.name);
-        editedItem.properties[property] = input.value;
+        var property = component.properties[i].name;
+        var input = document.getElementById('componentProperty-' + property);
+        properties[property] = input.value;
     }
 
     appState.graph.emit('changeNode', editedItem);
@@ -147,80 +148,9 @@ var contextMenus = {
     }
 };
 
-var library = {
-    'MQTT input': {
-        name: 'MQTT input',
-        icon: 'sign-out',
-        inports: [],
-        outports: [
-            {'name': 'payload', 'type': 'string'}
-        ],
-        properties: [
-            {'name': 'Topic', 'type': 'string'}
-        ],
-    },
-    'MQTT output': {
-        name: 'MQTT output',
-        icon: 'sign-in',
-        inports: [
-            {'name': 'payload', 'type': 'string'}
-        ],
-        outports: [],
-        properties: [
-            {'name': 'Topic', 'type': 'string'}
-        ],
-    },
-    'Pause': {
-        name: 'Pause',
-        icon: 'pause',
-        inports: [
-            {'name': 'payload', 'type': 'any'}
-        ],
-        outports: [
-            {'name': 'payload', 'type': 'any'}
-        ],
-        properties: [
-            {'name': 'Delay', 'type': 'number'}
-        ],
-    },
-    'Debug': {
-        name: 'Debug',
-        icon: 'eye',
-        inports: [
-            {'name': 'payload', 'type': 'any'}
-        ],
-        outports: [],
-        properties: [
-            {'name': 'Prefix', 'type': 'string'}
-        ],
-    },
-}
-
-for (var key in library) {
-    var li = document.createElement('li');
-    {
-        li.className = 'mdc-list-item';
-
-        var iconSpan = document.createElement('span')
-        {
-            iconSpan.className = 'mdc-list-item__graphic fa fa-' + library[key].icon;
-            iconSpan.areaHidden = true;
-        }
-        li.appendChild(iconSpan);
-
-        var span = document.createElement('span')
-        {
-            span.className = 'mdc-list-item__text';
-            span.appendChild(document.createTextNode(key))
-        }
-        li.appendChild(span);
-    }
-    componentsListElement.appendChild(li);
-}
-
 var appState = {
     graph: new fbpGraph.Graph(),
-    library: library,
+    library: {},
     theme: 'light',
 };
 
@@ -247,56 +177,62 @@ renderApp(); // initial
 // Follow changes in window size
 window.addEventListener("resize", renderApp);
 
-// Load initial graph
-var loadingMessage = document.getElementById("loading-message");
+window.loadLibrary = function (library) {
+    while (componentsListElement.firstChild) componentsListElement.removeChild(componentsListElement.firstChild);
+
+    appState.library = library;
+
+    for (var key in library) {
+        var li = document.createElement('li');
+        {
+            li.className = 'mdc-list-item';
+
+            var iconSpan = document.createElement('span')
+            {
+                iconSpan.className = 'mdc-list-item__graphic fa fa-' + library[key].icon;
+                iconSpan.areaHidden = true;
+            }
+            li.appendChild(iconSpan);
+
+            var span = document.createElement('span')
+            {
+                span.className = 'mdc-list-item__text';
+                span.appendChild(document.createTextNode(key))
+            }
+            li.appendChild(span);
+        }
+        componentsListElement.appendChild(li);
+    }
+};
+
 window.loadGraph = function (json) {
-    // Load graph
-    loadingMessage.innerHTML = "loading graph data...";
+    // create mock components in library for unknown components
+    for (var id in json.processes) {
+        var component = json.processes[id].component;
+        if (!(component in appState.library)) {
+            var metadata = json.processes[id].metadata
+            var properties = metadata.properties ? Object.keys(metadata.properties) : [];
+            appState.library[component] = {
+                name: component,
+                icon: 'question',
+                inports: [],
+                outports: [],
+                properties: properties.map(function(p) {return {name: p, type: 'any'};})
+            };
+        }
+    }
 
     fbpGraph.graph.loadJSON(json, function(err, graph){
         if (err) {
-            loadingMessage.innerHTML = "error loading graph: " + err.toString();
+            alert("error loading graph: " + err.toString());
             return;
         }
         appState.graph = graph;
         appState.graph.on('endTransaction', renderApp); // graph changed
         renderApp();
-        // Remove loading message
-        var loading = document.getElementById("loading");
-        loading.parentNode.removeChild(loading);
     });
 };
 
-/*
-window.loadGraph({
-"caseSensitive": false,
-"properties": {},
-"inports": {},
-"outports": {},
-"groups": [],
-"processes": {
-"dxe": {
-"component": "tall",
-"metadata": {
-"label": "tall",
-"x": 612,
-"y": 252,
-"width": 72,
-"height": 120
-}
-},
-"il4": {
-"component": "basic",
-"metadata": {
-"label": "basic",
-"x": 409,
-"y": 400,
-"width": 72,
-"height": 72
-}
-}
-},
-"connections": [
-]
-});
-*/
+window.getGraph = function () {
+    return appState.graph.toJSON();
+};
