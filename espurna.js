@@ -4,8 +4,10 @@ espurnaHostField.value = getCookie('host');
 var importFlowDialog = new mdc.dialog.MDCDialog(document.getElementById('import-flow-dialog'));
 var importFlowText = new mdc.textField.MDCTextField(document.getElementById('import-flow-text-div'))
 importFlowDialog.listen('MDCDialog:closed', (event) => {
-    if (event.detail.action == 'accept')
+    if (event.detail.action == 'accept') {
         loadGraph(JSON.parse(importFlowText.value));
+        importFlowText.value = '';
+    }
 });
 
 var exportFlowDialog = new mdc.dialog.MDCDialog(document.getElementById('export-flow-dialog'));
@@ -84,10 +86,17 @@ document.getElementById('save-flow-button').addEventListener('click', function()
 
 document.getElementById('restart-button').addEventListener('click', function() {
     if (confirm('OK to restart device?')) {
-        var socket = new WebSocket(getHost('ws') + 'ws');
-        socket.onopen = function() {
-            socket.send('{"action": "reboot"}');
-        };
+        try {
+            var socket = new WebSocket(getHost('ws') + 'ws');
+            socket.onerror = function(e) {
+              alert('Reboot error: ' + e.message);
+            };
+            socket.onopen = function() {
+                socket.send('{"action": "reboot"}');
+            };
+        } catch (e) {
+            alert('Reboot error: ' + e);
+        }
     }
 });
 

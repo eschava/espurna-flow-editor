@@ -38,8 +38,13 @@ function editNode(graph, itemKey, item) {
 
     for (var i = 0; i < component.properties.length; i++) {
         var property = component.properties[i];
-        var input = addInput(dialogContent, property.name, 'componentProperty-' + property.name, property.type);
-        input.value = item.metadata.properties ? item.metadata.properties[property.name] : '';
+        if (property.type == 'bool') {
+            var checkbox = addCheckbox(dialogContent, property.name, 'componentProperty-' + property.name);
+            checkbox.checked = item.metadata.properties ? item.metadata.properties[property.name] : '';
+        } else {
+            var input = addInput(dialogContent, property.name, 'componentProperty-' + property.name, property.type);
+            input.value = item.metadata.properties ? item.metadata.properties[property.name] : '';
+        }
     }
 
     editedItem = item;
@@ -54,9 +59,9 @@ function updateNode() {
     editedItem.metadata.label = document.getElementById('componentLabel').value;
 
     for (var i = 0; i < component.properties.length; i++) {
-        var property = component.properties[i].name;
-        var input = document.getElementById('componentProperty-' + property);
-        properties[property] = input.value;
+        var property = component.properties[i];
+        var input = document.getElementById('componentProperty-' + property.name);
+        properties[property.name] = property.type == 'bool' ? input.checked : input.value;
     }
 
     appState.graph.emit('changeNode', editedItem);
@@ -111,6 +116,65 @@ function addInput(parent, name, id, type) {
     parent.appendChild(mainDiv);
 
     return new mdc.textField.MDCTextField(document.getElementById(id + 'Div'));
+}
+
+function addCheckbox(parent, name, id) {
+    var mainDiv = document.createElement('div');
+    {
+        mainDiv.className = 'mdc-form-field';
+
+        var checkboxDiv = document.createElement('div');
+        {
+            checkboxDiv.className = 'mdc-checkbox';
+            checkboxDiv.id = id + 'Div';
+
+            var input = document.createElement('input');
+            {
+                input.type = 'checkbox';
+                input.id = id;
+                input.className = 'mdc-checkbox__native-control';
+            }
+            checkboxDiv.appendChild(input);
+
+            var backgroundDiv = document.createElement('div');
+            {
+                backgroundDiv.className = 'mdc-checkbox__background';
+
+                var svg = document.createElement('svg');
+                {
+                    svg.className = 'mdc-checkbox__checkmark';
+                    svg.setAttribute('viewBox', '0 0 24 24');
+
+                    var path = document.createElement('path');
+                    {
+                        path.className = 'mdc-checkbox__checkmark-path';
+                        path.setAttribute('fill', 'none');
+                        path.setAttribute('d', 'M1.73,12.91 8.1,19.28 22.79,4.59');
+                    }
+                    svg.appendChild(path);
+                }
+                backgroundDiv.appendChild(svg);
+
+                var mixedmarkDiv = document.createElement('div');
+                {
+                    mixedmarkDiv.className = 'mdc-checkbox__mixedmark';
+                }
+                backgroundDiv.appendChild(mixedmarkDiv);
+            }
+            checkboxDiv.appendChild(backgroundDiv);
+        }
+        mainDiv.appendChild(checkboxDiv);
+
+        var label = document.createElement('label');
+        {
+            label.for = id;
+            label.innerHTML = name;
+        }
+        mainDiv.appendChild(label);
+    }
+    parent.appendChild(mainDiv);
+
+    return new mdc.checkbox.MDCCheckbox(document.getElementById(id + 'Div'));
 }
 
 function deleteNode(graph, itemKey, item) {
