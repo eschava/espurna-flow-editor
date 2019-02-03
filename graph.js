@@ -38,12 +38,16 @@ function editNode(graph, itemKey, item) {
 
     for (var i = 0; i < component.properties.length; i++) {
         var property = component.properties[i];
+        var value = item.metadata.properties ? item.metadata.properties[property.name] : '';
         if (property.type == 'bool') {
             var checkbox = addCheckbox(dialogContent, property.name, 'componentProperty-' + property.name);
-            checkbox.checked = item.metadata.properties ? item.metadata.properties[property.name] : '';
+            checkbox.checked = value;
+        } else if (property.type == 'list') {
+            var combobox = addCombobox(dialogContent, property.name, 'componentProperty-' + property.name, property.values);
+            combobox.value = value;
         } else {
             var input = addInput(dialogContent, property.name, 'componentProperty-' + property.name, property.type);
-            input.value = item.metadata.properties ? item.metadata.properties[property.name] : '';
+            input.value = value;
         }
     }
 
@@ -175,6 +179,98 @@ function addCheckbox(parent, name, id) {
     parent.appendChild(mainDiv);
 
     return new mdc.checkbox.MDCCheckbox(document.getElementById(id + 'Div'));
+}
+
+function addCombobox(parent, name, id, values) {
+    var mainDiv = document.createElement('div');
+    {
+        mainDiv.className = 'mdc-select mdc-select--outlined';
+        mainDiv.id = id + 'Div';
+
+        var input = document.createElement('input');
+        {
+            input.type = 'hidden';
+            input.name = id;
+            input.id = id;
+        }
+        mainDiv.appendChild(input);
+
+        var i = document.createElement('i');
+        {
+            i.className = 'mdc-select__dropdown-icon';
+        }
+        mainDiv.appendChild(i);
+
+        var textDiv = document.createElement('div');
+        {
+            textDiv.className = 'mdc-select__selected-text';
+        }
+        mainDiv.appendChild(textDiv);
+
+        var menuDiv = document.createElement('div');
+        {
+            menuDiv.className = 'mdc-select__menu mdc-menu mdc-menu-surface demo-width-class';
+
+            var ul = document.createElement('ul');
+            {
+                ul.className = 'mdc-list';
+
+                var li = document.createElement('li');
+                {
+                    li.className = 'mdc-list-item mdc-list-item--selected';
+                    li.setAttribute('data-value', '');
+                    li.setAttribute('aria-selected', 'true');
+                }
+                ul.appendChild(li);
+
+                for (var value in values) {
+                    var li = document.createElement('li');
+                    {
+                        li.className = 'mdc-list-item';
+                        li.setAttribute('data-value', value);
+                        li.innerHTML = value;
+                    }
+                    ul.appendChild(li);
+                }
+            }
+            menuDiv.appendChild(ul);
+        }
+        mainDiv.appendChild(menuDiv);
+
+        var notchedDiv = document.createElement('div');
+        {
+            notchedDiv.className = 'mdc-notched-outline';
+
+            var notchedLeadingDiv = document.createElement('div');
+            {
+                notchedLeadingDiv.className = 'mdc-notched-outline__leading';
+            }
+            notchedDiv.appendChild(notchedLeadingDiv);
+
+            var notchedMainDiv = document.createElement('div');
+            {
+                notchedMainDiv.className = 'mdc-notched-outline__notch';
+
+                var label = document.createElement('label');
+                {
+                    label.className = 'mdc-floating-label';
+                    label.innerHTML = name;
+                }
+                notchedMainDiv.appendChild(label);
+            }
+            notchedDiv.appendChild(notchedMainDiv);
+
+            var notchedTrailingDiv = document.createElement('div');
+            {
+                notchedTrailingDiv.className = 'mdc-notched-outline__trailing';
+            }
+            notchedDiv.appendChild(notchedTrailingDiv);
+        }
+        mainDiv.appendChild(notchedDiv);
+    }
+    parent.appendChild(mainDiv);
+
+    return new mdc.select.MDCSelect(document.getElementById(id + 'Div'));
 }
 
 function deleteNode(graph, itemKey, item) {
