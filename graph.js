@@ -309,7 +309,7 @@ var contextMenus = {
 };
 
 var appState = {
-    graph: new fbpGraph.Graph(name = '', options = {caseSensitive: true}),
+    graph: new fbpGraph.Graph('', {caseSensitive: true}),
     library: {},
     theme: 'light',
 };
