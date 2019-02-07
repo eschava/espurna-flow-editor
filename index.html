@@ -33,34 +33,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
 
     <style>
-      html, body {
-        width: 100%;
-        height: 100%;
-      }
-      body {
-        font-family: "SourceCodePro",Helvetica,Arial,sans-serif;
-        overflow: hidden;
-      }
-	  .drawer-frame-root {
-		height: 100vh;
-		display: flex;
-	  }
-	  .mdc-dialog__title+.mdc-dialog__content {
-	    padding-top: 8px;
-	  }
-	  .mdc-text-field, .mdc-select {
-	      width: 100%;
-	      margin-top: 8px;
-	  }
-	  .mdc-drawer__content{
-	    display:flex;
-	  }
-	  nav {
-	    display:flex;
-	    flex-direction:column;
-	    justify-content:space-between;
-	    flex:1;
-	  }
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+        body {
+            font-family: "SourceCodePro",Helvetica,Arial,sans-serif;
+            overflow: hidden;
+        }
+        .drawer-frame-root {
+            height: 100vh;
+            display: flex;
+        }
+        .mdc-dialog__title+.mdc-dialog__content {
+            padding-top: 8px;
+        }
+        .mdc-text-field, .mdc-select {
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .mdc-multi-input-type {
+            width: 30%;
+        }
+
+        .mdc-multi-input-value {
+            width: 70%;
+        }
+
+        .mdc-drawer__content{
+            display:flex;
+        }
+        nav {
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+            flex:1;
+        }
     </style>
 
 </head>

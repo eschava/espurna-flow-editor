@@ -45,6 +45,17 @@ function editNode(graph, itemKey, item) {
         } else if (property.type == 'list') {
             var combobox = addCombobox(dialogContent, property.name, 'componentProperty-' + property.name, property.values);
             combobox.value = value;
+        } else if (property.type == 'any') {
+            var tuple = addMultiInput(dialogContent, property.name, 'componentProperty-' + property.name);
+            if (typeof value == 'number') {
+                tuple.type.selectedIndex = Number.isInteger(value) ? 1 : 2;
+                tuple.value.value = value;
+            } else if (typeof value == 'boolean') {
+                tuple.type.selectedIndex = value ? 3 : 4;
+            } else {
+                tuple.type.selectedIndex = 0;
+                tuple.value.value = value;
+            }
         } else {
             var input = addInput(dialogContent, property.name, 'componentProperty-' + property.name, property.type);
             input.value = value;
@@ -65,7 +76,11 @@ function updateNode() {
     for (var i = 0; i < component.properties.length; i++) {
         var property = component.properties[i];
         var input = document.getElementById('componentProperty-' + property.name);
-        properties[property.name] = property.type == 'bool' ? input.checked : input.value;
+        properties[property.name] = property.type == 'bool' ? input.checked :
+                                    property.type == 'int' ? parseInt(input.value) :
+                                    property.type == 'double' ? parseFloat(input.value) :
+                                    property.type == 'any' ? parseMultiValue(input.value, document.getElementById('componentProperty-' + property.name + 'Type').value) :
+                                    input.value;
     }
 
     appState.graph.emit('changeNode', editedItem);
@@ -80,7 +95,7 @@ function addInput(parent, name, id, type) {
 
         var input = document.createElement('input');
         {
-            input.type = type == 'number' ? 'number' : 'text';
+            input.type = type == 'int' /*|| type == 'double'*/ ? 'number' : 'text';
             input.id = id;
             input.className = 'mdc-text-field__input';
         }
@@ -271,6 +286,160 @@ function addCombobox(parent, name, id, values) {
     parent.appendChild(mainDiv);
 
     return new mdc.select.MDCSelect(document.getElementById(id + 'Div'));
+}
+
+function addMultiInput(parent, name, id) {
+    var values = ['String', 'Integer', 'Double', 'True', 'False'];
+
+    var typeMainDiv = document.createElement('div');
+    {
+        typeMainDiv.className = 'mdc-select mdc-select--outlined mdc-multi-input-type';
+        typeMainDiv.id = id + 'TypeDiv';
+
+        var input = document.createElement('input');
+        {
+            input.type = 'hidden';
+            input.name = id + 'Type';
+            input.id = id + 'Type';
+        }
+        typeMainDiv.appendChild(input);
+
+        var i = document.createElement('i');
+        {
+            i.className = 'mdc-select__dropdown-icon';
+        }
+        typeMainDiv.appendChild(i);
+
+        var textDiv = document.createElement('div');
+        {
+            textDiv.className = 'mdc-select__selected-text';
+        }
+        typeMainDiv.appendChild(textDiv);
+
+        var menuDiv = document.createElement('div');
+        {
+            menuDiv.className = 'mdc-select__menu mdc-menu mdc-menu-surface demo-width-class';
+
+            var ul = document.createElement('ul');
+            {
+                ul.className = 'mdc-list';
+
+                for (var i in values) {
+                    var value = values[i];
+                    var li = document.createElement('li');
+                    {
+                        li.className = 'mdc-list-item';
+                        li.setAttribute('data-value', value);
+                        li.innerHTML = value;
+                    }
+                    ul.appendChild(li);
+                }
+            }
+            menuDiv.appendChild(ul);
+        }
+        typeMainDiv.appendChild(menuDiv);
+
+        var notchedDiv = document.createElement('div');
+        {
+            notchedDiv.className = 'mdc-notched-outline';
+
+            var notchedLeadingDiv = document.createElement('div');
+            {
+                notchedLeadingDiv.className = 'mdc-notched-outline__leading';
+            }
+            notchedDiv.appendChild(notchedLeadingDiv);
+
+            var notchedMainDiv = document.createElement('div');
+            {
+                notchedMainDiv.className = 'mdc-notched-outline__notch';
+
+                var label = document.createElement('label');
+                {
+                    label.className = 'mdc-floating-label';
+                    label.innerHTML = name;
+                }
+                notchedMainDiv.appendChild(label);
+            }
+            notchedDiv.appendChild(notchedMainDiv);
+
+            var notchedTrailingDiv = document.createElement('div');
+            {
+                notchedTrailingDiv.className = 'mdc-notched-outline__trailing';
+            }
+            notchedDiv.appendChild(notchedTrailingDiv);
+        }
+        typeMainDiv.appendChild(notchedDiv);
+    }
+    parent.appendChild(typeMainDiv);
+
+    var valueMainDiv = document.createElement('div');
+    {
+        valueMainDiv.id = id + 'ValueDiv';
+        valueMainDiv.className = 'mdc-text-field mdc-text-field--outlined mdc-multi-input-value';
+
+        var input = document.createElement('input');
+        {
+//            input.type = type == 'int' || type == 'double' ? 'number' : 'text';
+            input.type = 'text';
+            input.id = id;
+            input.className = 'mdc-text-field__input';
+        }
+        valueMainDiv.appendChild(input);
+
+        var outlineDiv = document.createElement('div');
+        {
+            outlineDiv.className = 'mdc-notched-outline';
+
+            var outlineDivLeading = document.createElement('div');
+            {
+                outlineDivLeading.className = 'mdc-notched-outline__leading';
+            }
+            outlineDiv.appendChild(outlineDivLeading);
+
+            var outlineDivNotch = document.createElement('div');
+            {
+                outlineDivNotch.className = 'mdc-notched-outline__notch';
+                var label = document.createElement('label');
+                {
+                    label.for = id;
+                    label.className = 'mdc-floating-label';
+                    label.innerHTML = name;
+                }
+                outlineDivNotch.appendChild(label);
+            }
+            outlineDiv.appendChild(outlineDivNotch);
+
+            var outlineDivTrailing = document.createElement('div');
+            {
+                outlineDivTrailing.className = 'mdc-notched-outline__trailing';
+            }
+            outlineDiv.appendChild(outlineDivTrailing);
+        }
+        valueMainDiv.appendChild(outlineDiv);
+    }
+    parent.appendChild(valueMainDiv);
+
+    var type = new mdc.select.MDCSelect(document.getElementById(id + 'TypeDiv'));
+    var value = new mdc.textField.MDCTextField(document.getElementById(id + 'ValueDiv'));
+
+    type.listen('MDCSelect:change', () => {
+        var i = type.selectedIndex;
+        value.disabled = i >= 3;
+        if (i < 3) {
+            var input = document.getElementById(id);
+            input.type = i == 1 /*|| i == 2*/ ? 'number' : 'text';
+        }
+    });
+
+    return {value: value, type: type};
+}
+
+function parseMultiValue(value, type) {
+    if (type == 'Integer') return parseInt(value);
+    if (type == 'Double') return parseFloat(value);
+    if (type == 'True') return true;
+    if (type == 'False') return false;
+    return value;
 }
 
 function deleteNode(graph, itemKey, item) {
