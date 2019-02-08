@@ -535,6 +535,8 @@ window.loadLibrary = function (library) {
 };
 
 window.loadGraph = function (json) {
+    json.caseSensitive = true;
+
     // create mock components in library for unknown components
     for (var id in json.processes) {
         var component = json.processes[id].component;
