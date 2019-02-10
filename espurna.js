@@ -60,13 +60,13 @@ document.getElementById('load-flow-button').addEventListener('click', function()
         window.loadLibrary(library);
 
         loadJSON(host + 'flow', 'loading flow...', function(flow) {
-            loadGraph(flow);
+            loadGraph(looseFlow(flow));
         });
     });
 });
 
 document.getElementById('save-flow-button').addEventListener('click', function() {
-    var json = JSON.stringify(window.getGraph());
+    var json = JSON.stringify(compactFlow(window.getGraph()));
 
     var boundary = 'nVenJ7H4puv'
     var body = '--' + boundary
@@ -130,4 +130,71 @@ function getCookie(name) {
         if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
     }
     return null;
+}
+
+function compactFlow(obj) {
+    return process(obj,
+        {
+            'processes': 'P',
+            'component': 'C',
+            'metadata': 'M',
+            'label': 'L',
+            'properties': 'R',
+            'connections': 'X',
+            'src': 'S',
+            'tgt': 'T',
+            'process': 'I',
+            'port': 'N',
+        },
+        ['caseSensitive', 'inports', 'outports', 'groups', 'width', 'height', 'route']
+    );
+}
+
+function looseFlow(obj) {
+    return process(obj,
+        {
+            'P': 'processes',
+            'C': 'component',
+            'M': 'metadata',
+            'L': 'label',
+            'R': 'properties',
+            'X': 'connections',
+            'S': 'src',
+            'T': 'tgt',
+            'I': 'process',
+            'N': 'port',
+        },
+        []
+    );
+}
+
+function process(obj, replacements, removes) {
+    var result = {};
+
+    for (var property in obj) {
+        if (obj.hasOwnProperty(property)) {
+            if (removes.includes(property))
+                continue; // skip removed
+
+            var val = obj[property];
+            if (val == null)
+                continue;
+
+            if (property in replacements)
+                property = replacements[property];
+
+            if (val.constructor === Array) {
+                for (var i = 0; i < val.length; i++) {
+                    val[i] = process(val[i], replacements, removes);
+                }
+            } else if (typeof val == 'object') {
+                val = process(val, replacements, removes);
+                if (Object.keys(val).length === 0)
+                    continue; // skip empty
+            }
+
+            result[property] = val;
+        }
+    }
+    return result;
 }
