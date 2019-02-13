@@ -238,7 +238,8 @@ function addCombobox(parent, name, id, values) {
                 }
                 ul.appendChild(li);
 
-                for (var value in values) {
+                for (var i = 0; i < values.length; i++) {
+                    var value = values[i];
                     var li = document.createElement('li');
                     {
                         li.className = 'mdc-list-item';
