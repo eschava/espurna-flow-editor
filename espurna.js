@@ -57,6 +57,17 @@ function loadJSON(page, message, callback) {
 document.getElementById('load-flow-button').addEventListener('click', function() {
     var host = getHost();
     loadJSON(host + 'flow_library', 'loading library...', function(library) {
+        // values could be put out of them component to special holder property
+        if ('_values' in library) {
+            var values = library['_values'];
+            delete library['_values'];
+            for (var i = 0; i < values.length; i++) {
+                var item = values[i];
+                var properties = library[item.component].properties;
+                var property = properties.find(function(p) {return p.name == item.property});
+                property.values = item.values;
+            }
+        }
         window.loadLibrary(library);
 
         loadJSON(host + 'flow', 'loading flow...', function(flow) {
