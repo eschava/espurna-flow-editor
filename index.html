@@ -40,10 +40,23 @@
         body {
             font-family: "SourceCodePro",Helvetica,Arial,sans-serif;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         .drawer-frame-root {
             height: 100vh;
             display: flex;
+            width: 100%;
+        }
+        .mdc-layout-grid {
+            padding: 0;
+        }
+        .drawer-frame-content {
+            flex: 1;
+        }
+        .mdc-list-item .mdc-list-item__graphic {
+            margin-right: 32px;
+            margin-left: 0;
         }
         .mdc-dialog__title+.mdc-dialog__content {
             padding-top: 8px;
@@ -60,69 +73,66 @@
         .mdc-multi-input-value {
             width: 70%;
         }
-
-        .mdc-drawer__content{
-            display:flex;
-        }
-        nav {
-            display:flex;
-            flex-direction:column;
-            justify-content:space-between;
-            flex:1;
-        }
     </style>
 
 </head>
 <body>
 
-<div id="root">
-    <div class="drawer-frame-root">
-        <div class="drawer-frame-app-content">
+<div class="drawer-frame-root">
+    <aside class="app-layout__drawer app-layout__drawer--align-start mdc-drawer mdc-drawer--persistent mdc-drawer--open">
+        <div class="mdc-persistent-drawer__drawer">
+            <nav class="mdc-persistent-drawer__content mdc-list">
+                <div id="components-list">
+                </div>
+            </nav>
+        </div>
+    </aside>
+
+    <main class="drawer-frame-content">
+        <div class="mdc-layout-grid">
             <div class="drawer-main-content" id="editor">
             </div>
         </div>
+    </main>
 
-        <aside class="mdc-drawer">
-            <div class="mdc-drawer__content">
-                <nav class="mdc-list">
-                    <div id="components-list">
-                    </div>
-                    <ul>
-                        <hr class="mdc-list-divider"/>
-                        <li class="mdc-list-item" id="import-flow-button">
-                            <span class="mdc-list-item__graphic fa fa-arrow-right" aria-selected="true" tabindex="0"></span>
-                            <span class="mdc-list-item__text">Import flow</span>
-                        </li>
-                        <li class="mdc-list-item" id="export-flow-button">
-                            <span class="mdc-list-item__graphic fa fa-arrow-left" aria-selected="true" tabindex="0"></span>
-                            <span class="mdc-list-item__text">Export flow</span>
-                        </li>
-                        <li id="espurnaHost" class="mdc-text-field mdc-text-field--outlined">
-                            <input type="text" id="espurnaHostInput" class="mdc-text-field__input">
+    <aside class="app-layout__drawer app-layout__drawer--align-end mdc-drawer mdc-drawer--persistent mdc-drawer--open mdc-typography">
+        <nav class="mdc-drawer__drawer">
+            <nav class="mdc-drawer__content mdc-list" id="controls">
+                <ul>
+                    <hr class="mdc-list-divider"/>
+                    <li class="mdc-list-item" id="import-flow-button">
+                        <span class="mdc-list-item__graphic fa fa-arrow-right" aria-selected="true" tabindex="0"></span>
+                        <span class="mdc-list-item__text">Import flow</span>
+                    </li>
+                    <li class="mdc-list-item" id="export-flow-button">
+                        <span class="mdc-list-item__graphic fa fa-arrow-left" aria-selected="true" tabindex="0"></span>
+                        <span class="mdc-list-item__text">Export flow</span>
+                    </li>
+                    <li id="espurnaHost" class="mdc-text-field mdc-text-field--outlined">
+                        <input type="text" id="espurnaHostInput" class="mdc-text-field__input">
 
-                            <div class="mdc-notched-outline">
-                                <div class="mdc-notched-outline__leading"></div>
-                                <div class="mdc-notched-outline__notch"><label for="espurnaHostInput" class="mdc-floating-label">Host</label></div>
-                                <div class="mdc-notched-outline__trailing"></div>
-                            </div>
-                        </li>
-                        <li class="mdc-list-item" id="load-flow-button">
-                            <span class="mdc-list-item__graphic fa fa-download" aria-selected="true" tabindex="0"></span>
-                            <span class="mdc-list-item__text">Load flow</span>
-                        </li>
-                        <li class="mdc-list-item" id="save-flow-button">
-                            <span class="mdc-list-item__graphic fa fa-upload" aria-selected="true" tabindex="0"></span>
-                            <span class="mdc-list-item__text">Save flow</span>
-                        </li>
-                        <li class="mdc-list-item" id="restart-button">
-                            <span class="mdc-list-item__graphic fa fa-power-off" aria-selected="true" tabindex="0"></span>
-                            <span class="mdc-list-item__text">Restart</span>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </aside>
-    </div>
+                        <div class="mdc-notched-outline">
+                            <div class="mdc-notched-outline__leading"></div>
+                            <div class="mdc-notched-outline__notch"><label for="espurnaHostInput" class="mdc-floating-label">Host</label></div>
+                            <div class="mdc-notched-outline__trailing"></div>
+                        </div>
+                    </li>
+                    <li class="mdc-list-item" id="load-flow-button">
+                        <span class="mdc-list-item__graphic fa fa-download" aria-selected="true" tabindex="0"></span>
+                        <span class="mdc-list-item__text">Load flow</span>
+                    </li>
+                    <li class="mdc-list-item" id="save-flow-button">
+                        <span class="mdc-list-item__graphic fa fa-upload" aria-selected="true" tabindex="0"></span>
+                        <span class="mdc-list-item__text">Save flow</span>
+                    </li>
+                    <li class="mdc-list-item" id="restart-button">
+                        <span class="mdc-list-item__graphic fa fa-power-off" aria-selected="true" tabindex="0"></span>
+                        <span class="mdc-list-item__text">Restart</span>
+                    </li>
+                </ul>
+            </nav>
+        </nav>
+    </aside>
 </div>
 
 <div id="edit-component-dialog"

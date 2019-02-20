@@ -1,6 +1,7 @@
 "use strict";
 var fbpGraph = window.TheGraph.fbpGraph;
 
+var controlsElement = document.getElementById('controls');
 var componentsListElement = document.getElementById('components-list');
 var componentList = new mdc.list.MDCList(componentsListElement);
 componentList.singleSelection = true;
@@ -485,18 +486,17 @@ var appState = {
 };
 
 function renderApp() {
-    var editor = document.getElementById('editor');
-    editor.className = 'the-graph-' + appState.theme;
-
     var props = {
-        width: window.innerWidth - componentsListElement.offsetWidth,
+        width: window.innerWidth - componentsListElement.offsetWidth - controlsElement.offsetWidth,
         height: window.innerHeight,
+        offsetX: componentsListElement.offsetWidth,
         graph: appState.graph,
         library: appState.library,
         menus: contextMenus
     }
 
     var editor = document.getElementById('editor');
+    editor.className = 'the-graph-' + appState.theme;
     editor.width = props.width;
     editor.height = props.height;
     var element = React.createElement(TheGraph.App, props);
