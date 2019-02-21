@@ -42,6 +42,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            margin: 0;
         }
         .drawer-frame-root {
             height: 100vh;
@@ -51,8 +52,15 @@
         .mdc-layout-grid {
             padding: 0;
         }
-        .drawer-frame-content {
+        .mdc-drawer--close {
+            border-left-width: 1px;
+            border-left-style: solid;
+        }
+        .mdc-list {
             flex: 1;
+        }
+        ul {
+            padding: 4px;
         }
         .mdc-list-item .mdc-list-item__graphic {
             margin-right: 32px;
@@ -79,7 +87,7 @@
 <body>
 
 <div class="drawer-frame-root">
-    <aside class="app-layout__drawer app-layout__drawer--align-start mdc-drawer mdc-drawer--persistent mdc-drawer--open">
+    <aside class="app-layout__drawer app-layout__drawer--align-start mdc-drawer mdc-drawer--persistent mdc-drawer--open mdc-drawer__content">
         <div class="mdc-persistent-drawer__drawer">
             <nav class="mdc-persistent-drawer__content mdc-list">
                 <div id="components-list">
@@ -95,11 +103,10 @@
         </div>
     </main>
 
-    <aside class="app-layout__drawer app-layout__drawer--align-end mdc-drawer mdc-drawer--persistent mdc-drawer--open mdc-typography">
+    <aside class="app-layout__drawer app-layout__drawer--align-end mdc-drawer mdc-drawer--persistent mdc-drawer--close mdc-typography">
         <nav class="mdc-drawer__drawer">
             <nav class="mdc-drawer__content mdc-list" id="controls">
                 <ul>
-                    <hr class="mdc-list-divider"/>
                     <li class="mdc-list-item" id="import-flow-button">
                         <span class="mdc-list-item__graphic fa fa-arrow-right" aria-selected="true" tabindex="0"></span>
                         <span class="mdc-list-item__text">Import flow</span>
