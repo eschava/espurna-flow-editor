@@ -77,6 +77,8 @@ document.getElementById('load-flow-button').addEventListener('click', function()
 });
 
 document.getElementById('save-flow-button').addEventListener('click', function() {
+    if (!confirm('OK to update flow on device?')) return;
+
     var json = JSON.stringify(compactFlow(window.getGraph()));
 
     var boundary = 'nVenJ7H4puv'
@@ -96,18 +98,18 @@ document.getElementById('save-flow-button').addEventListener('click', function()
 });
 
 document.getElementById('restart-button').addEventListener('click', function() {
-    if (confirm('OK to restart device?')) {
-        try {
-            var socket = new WebSocket(getHost('ws') + 'ws');
-            socket.onerror = function(e) {
-              alert('Reboot error: ' + e.message);
-            };
-            socket.onopen = function() {
-                socket.send('{"action": "reboot"}');
-            };
-        } catch (e) {
-            alert('Reboot error: ' + e);
-        }
+    if (!confirm('OK to restart device?')) return;
+
+    try {
+        var socket = new WebSocket(getHost('ws') + 'ws');
+        socket.onerror = function(e) {
+          alert('Reboot error: ' + e.message);
+        };
+        socket.onopen = function() {
+            socket.send('{"action": "reboot"}');
+        };
+    } catch (e) {
+        alert('Reboot error: ' + e);
     }
 });
 

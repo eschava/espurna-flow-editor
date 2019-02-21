@@ -29,6 +29,7 @@ var editedItem;
 function editNode(graph, itemKey, item) {
     var component = appState.library[item.component];
 
+    showInfo(item.component);
     document.getElementById('edit-component-dialog-title').innerHTML = item.metadata.label;
 
     var dialogContent = document.getElementById('edit-component-dialog-content');
@@ -444,9 +445,31 @@ function parseMultiValue(value, type) {
     return value;
 }
 
+function cloneNode(graph, itemKey, item) {
+    var id = Math.round(Math.random() * 100000).toString(36);
+    var metadata = JSON.parse(JSON.stringify(item.metadata)); // clone
+    metadata.label += " copy";
+    metadata.x += 20;
+    metadata.y += 20;
+
+    appState.graph.addNode(id, item.component, metadata);
+}
+
 function deleteNode(graph, itemKey, item) {
     graph.removeNode(itemKey);
 }
+
+function showNodeInfo(e) {
+    var component = Object.keys(appState.library)[componentList.getListItemIndex_(e)];
+    showInfo(component);
+}
+
+function showInfo(component) {
+    var info = "<b>" + component + "</b><br/><br/>";
+    info += getInfo(component);
+    document.getElementById('description').innerHTML = info;
+}
+
 function deleteEdge(graph, itemKey, item) {
     graph.removeEdge(item.from.node, item.from.port, item.to.node, item.to.port);
 }
@@ -466,10 +489,15 @@ var contextMenus = {
         }
     },
     node: {
-        n4: {
+        w4: {
             icon: "edit",
             iconLabel: "edit",
             action: editNode
+        },
+        e4: {
+            icon: "clone",
+            iconLabel: "clone",
+            action: cloneNode
         },
         s4: {
             icon: "trash-o",
@@ -515,6 +543,7 @@ window.loadLibrary = function (library) {
     for (var key in library) {
         var li = document.createElement('li');
         {
+            li.addEventListener('mouseenter', showNodeInfo);
             li.className = 'mdc-list-item';
 
             var iconSpan = document.createElement('span')
