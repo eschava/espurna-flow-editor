@@ -146,7 +146,27 @@ function getCookie(name) {
 }
 
 function compactFlow(obj) {
-    return process(obj,
+    // compact processes to array
+    var processes = obj['processes'];
+    var processesArr = [];
+    for (var property in processes) {
+        if (processes.hasOwnProperty(property)) {
+            var component = processes[property];
+            var metadata = component.metadata;
+            processesArr.push([property, component.component, metadata.label, metadata.x, metadata.y, metadata.properties]);
+        }
+    }
+    obj['processes'] = processesArr;
+
+    // compact connections
+    var connections = obj['connections'];
+    for (var i = 0; i < connections.length; i++) {
+        var connection = connections[i];
+        connections[i] = [connection.src.process, connection.src.port, connection.tgt.process, connection.tgt.port];
+    }
+
+    // compact keys
+    return changeKeys(obj,
         {
             'processes': 'P',
             'component': 'C',
@@ -164,7 +184,8 @@ function compactFlow(obj) {
 }
 
 function looseFlow(obj) {
-    return process(obj,
+    // loose keys
+    obj = changeKeys(obj,
         {
             'P': 'processes',
             'C': 'component',
@@ -179,34 +200,63 @@ function looseFlow(obj) {
         },
         []
     );
+
+    // loose processes
+    var processes = obj['processes'];
+    if (processes && processes.constructor === Array) {
+        var processesObj = {};
+        for (var i = 0; i < processes.length; i++) {
+            var process = processes[i];
+            processesObj[process[0]] = {'component': process[1], 'metadata': {'label': process[2], 'x': process[3], 'y': process[4], 'properties': process[5]}};
+        }
+        obj['processes'] = processesObj;
+    }
+
+    // loose connections
+    var connections = obj['connections'];
+    for (var i = 0; i < connections.length; i++) {
+        var connection = connections[i];
+        if (connection.constructor === Array) {
+            connections[i] = {'src': {'process': connection[0], 'port': connection[1]}, 'tgt': {'process': connection[2], 'port': connection[3]}};
+        }
+    }
+
+    return obj;
 }
 
-function process(obj, replacements, removes) {
-    var result = {};
+function changeKeys(obj, replacements, removes) {
+    var result = obj;
 
-    for (var property in obj) {
-        if (obj.hasOwnProperty(property)) {
-            if (removes.includes(property))
-                continue; // skip removed
+    if (typeof obj == 'object') {
+        if (obj.constructor === Array) {
+            for (var i = 0; i < obj.length; i++) {
+                obj[i] = changeKeys(obj[i], replacements, removes);
+            }
+        } else {
+            var result = {};
 
-            var val = obj[property];
-            if (val == null)
-                continue;
+            for (var property in obj) {
+                if (obj.hasOwnProperty(property)) {
+                    if (removes.includes(property))
+                        continue; // skip removed
 
-            if (property in replacements)
-                property = replacements[property];
+                    var val = obj[property];
+                    if (val == null)
+                        continue;
 
-            if (val.constructor === Array) {
-                for (var i = 0; i < val.length; i++) {
-                    val[i] = process(val[i], replacements, removes);
+                    if (property in replacements)
+                        property = replacements[property];
+
+                    val = changeKeys(val, replacements, removes);
+                    if (val === null)
+                        continue; // skip empty
+
+                    result[property] = val;
                 }
-            } else if (typeof val == 'object') {
-                val = process(val, replacements, removes);
-                if (Object.keys(val).length === 0)
-                    continue; // skip empty
             }
 
-            result[property] = val;
+            if (Object.keys(result).length === 0)
+                result = null; // skip empty
         }
     }
     return result;
