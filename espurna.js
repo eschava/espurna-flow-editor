@@ -202,7 +202,7 @@ function looseFlow(obj) {
     );
 
     // loose processes
-    var processes = obj['processes'];
+    var processes = 'processes' in obj ? obj['processes'] : null;
     if (processes && processes.constructor === Array) {
         var processesObj = {};
         for (var i = 0; i < processes.length; i++) {
@@ -213,11 +213,13 @@ function looseFlow(obj) {
     }
 
     // loose connections
-    var connections = obj['connections'];
-    for (var i = 0; i < connections.length; i++) {
-        var connection = connections[i];
-        if (connection.constructor === Array) {
-            connections[i] = {'src': {'process': connection[0], 'port': connection[1]}, 'tgt': {'process': connection[2], 'port': connection[3]}};
+    if ('connections' in obj) {
+        var connections = obj['connections'];
+        for (var i = 0; i < connections.length; i++) {
+            var connection = connections[i];
+            if (connection.constructor === Array) {
+                connections[i] = {'src': {'process': connection[0], 'port': connection[1]}, 'tgt': {'process': connection[2], 'port': connection[3]}};
+            }
         }
     }
 
