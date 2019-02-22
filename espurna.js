@@ -227,7 +227,7 @@ function looseFlow(obj) {
 function changeKeys(obj, replacements, removes) {
     var result = obj;
 
-    if (typeof obj == 'object') {
+    if (obj != null && typeof obj == 'object') {
         if (obj.constructor === Array) {
             for (var i = 0; i < obj.length; i++) {
                 obj[i] = changeKeys(obj[i], replacements, removes);
