@@ -200,6 +200,8 @@ function looseFlow(obj) {
         },
         []
     );
+    if (obj == null)
+        return {};
 
     // loose processes
     var processes = 'processes' in obj ? obj['processes'] : null;
