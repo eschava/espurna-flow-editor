@@ -33,8 +33,8 @@ function getInfo(component) {
                'on <b>State</b> input) any received data value is dropped';
     }
     if (component == 'Hysteresis') {
-        return 'Sends received value message to the <b>Rise</b> output if it crosses the <b>Min</b> property value and ' +
-               'to the <b>Fall</b> output if it crosses the <b>Max</b> property value. Also, values of min and max ' +
+        return 'Sends received value message to the <b>Rise</b> output if it crosses the <b>Max</b> property value and ' +
+               'to the <b>Fall</b> output if it crosses the <b>Min</b> property value. Also, values of min and max ' +
                'properties could be overridden with values from <b>Min</b> and <b>Max</b> values';
     }
     if (component == 'Save setting') {
@@ -57,10 +57,12 @@ function getInfo(component) {
                'button and 2/4/5 for releasing after a normal/long/very long delay)';
     }
     if (component == 'MQTT subscribe') {
-        return 'Subscribes for MQTT topic and sends received payload as a string message';
+        return 'Subscribes for MQTT topic and sends received payload as a string message. You can use the following ' +
+               'placeholders: {hostname}, {mac} in the topic';
     }
     if (component == 'MQTT publish') {
-        return 'Publishes received value to MQTT topic';
+        return 'Publishes received value to MQTT topic. You can use the following placeholders: {hostname}, {mac} ' +
+               'in the topic';
     }
     if (component == 'Sensor') {
         return 'Sends numeric value received from the sensor';
