@@ -48,6 +48,12 @@ function getInfo(component) {
                'parameters of Espurna firmware (such as hostname, ssid) so this component could be used to retrieve ' +
                'system settings';
     }
+    if (component == 'Light') {
+        return 'Changes color and brightness of the light. <br/> Usually, value for the <b>Color</b> input is RGB value ' +
+               'having format #RRGGBB or #RRGGBBWW to change warmness of color using WW part from warm (00) to cold (FF). ' +
+               '<br/>Brightness should be an integer number from 0 (lowest brightness) to 255 (highest).<br/>' +
+               'Use <b>Relay</b> component to switch on/off light.'
+    }
     if (component == 'Relay') {
         return 'Switches on/off the relay specified by number depending on the boolean message received on <b>State</b> ' +
                'input or toggles the state for any value received on <b>Toggle</b> input';
