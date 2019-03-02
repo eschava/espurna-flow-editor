@@ -51,7 +51,7 @@ function getInfo(component) {
     if (component == 'Light') {
         return 'Changes color and brightness of the light. <br/> Usually, value for the <b>Color</b> input is RGB value ' +
                'having format #RRGGBB or #RRGGBBWW to change warmness of color using WW part from warm (00) to cold (FF). ' +
-               '<br/>Brightness should be an integer number from 0 (lowest brightness) to 255 (highest).<br/>' +
+               '<br/><b>Brightness</b> should be an integer number from 0 (lowest brightness) to 255 (highest).<br/>' +
                'Use <b>Relay</b> component to switch on/off light.'
     }
     if (component == 'Relay') {
