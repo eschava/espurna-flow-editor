@@ -1,0 +1,72 @@
+{
+  "caseSensitive": true,
+  "properties": {},
+  "inports": {},
+  "outports": {},
+  "groups": [],
+  "processes": {
+    "fgb": {
+      "component": "Start",
+      "metadata": {
+        "label": "Start",
+        "x": -144,
+        "y": 144,
+        "width": 72,
+        "height": 72,
+        "properties": {
+          "Value": 5
+        }
+      }
+    },
+    "24vp": {
+      "component": "Change",
+      "metadata": {
+        "label": "Change",
+        "x": 108,
+        "y": 144,
+        "width": 72,
+        "height": 72,
+        "properties": {
+          "Value": "35"
+        }
+      }
+    },
+    "5ob": {
+      "component": "Debug",
+      "metadata": {
+        "label": "Debug",
+        "x": 396,
+        "y": 144,
+        "width": 72,
+        "height": 72,
+        "properties": {
+          "Prefix": "Debug: "
+        }
+      }
+    }
+  },
+  "connections": [
+    {
+      "src": {
+        "process": "fgb",
+        "port": "Data"
+      },
+      "tgt": {
+        "process": "24vp",
+        "port": "Data"
+      },
+      "metadata": {}
+    },
+    {
+      "src": {
+        "process": "24vp",
+        "port": "Data"
+      },
+      "tgt": {
+        "process": "5ob",
+        "port": "Data"
+      },
+      "metadata": {}
+    }
+  ]
+}

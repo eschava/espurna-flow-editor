@@ -1,5 +1,5 @@
 var espurnaHostField = new mdc.textField.MDCTextField(document.getElementById('espurnaHost'));
-espurnaHostField.value = getCookie('host');
+espurnaHostField.value = getCookie('host') || 'http://espurna.online/';
 
 var importFlowDialog = new mdc.dialog.MDCDialog(document.getElementById('import-flow-dialog'));
 var importFlowText = new mdc.textField.MDCTextField(document.getElementById('import-flow-text-div'))
