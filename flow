@@ -9,8 +9,8 @@
       "component": "Start",
       "metadata": {
         "label": "Start",
-        "x": -144,
-        "y": 144,
+        "x": 252,
+        "y": 324,
         "width": 72,
         "height": 72,
         "properties": {
@@ -22,8 +22,8 @@
       "component": "Change",
       "metadata": {
         "label": "Change",
-        "x": 108,
-        "y": 144,
+        "x": 576,
+        "y": 324,
         "width": 72,
         "height": 72,
         "properties": {
@@ -35,8 +35,8 @@
       "component": "Debug",
       "metadata": {
         "label": "Debug",
-        "x": 396,
-        "y": 144,
+        "x": 900,
+        "y": 324,
         "width": 72,
         "height": 72,
         "properties": {
@@ -54,8 +54,7 @@
       "tgt": {
         "process": "24vp",
         "port": "Data"
-      },
-      "metadata": {}
+      }
     },
     {
       "src": {
@@ -65,8 +64,7 @@
       "tgt": {
         "process": "5ob",
         "port": "Data"
-      },
-      "metadata": {}
+      }
     }
   ]
 }
