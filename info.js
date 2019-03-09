@@ -10,14 +10,14 @@ function getInfo(component) {
     }
     if (component == 'Math') {
         return 'Sends the result of the mathematical operation when both operands are received. ' +
-               'After new value is sent on any new value received.<br/>' +
-               'Type of value is determined by the first operand.<br/>' +
+               'After new output value is sent on any new input value received.<br/>' +
+               'Type of the output value is determined by the first operand.<br/>' +
                'String values are always concatenated';
     }
     if (component == 'Compare') {
         return 'Compares received value with test value. The test value is specified by property or can be overridden ' +
-               'using "Test" input. If the result of the comparison is true then received value is sent to first ("True") ' +
-               'output, otherwise to second ("False") output';
+               'using <b>Test</b> input. If the result of the comparison is true then received value is sent to first ' +
+               '(<b>True</b>) output, otherwise to second (<b>False</b>) output';
     }
     if (component == 'Delay') {
         return 'Delays the received value for the given number of seconds. If <b>Last only</b> property is specified, ' +
@@ -35,7 +35,7 @@ function getInfo(component) {
     if (component == 'Hysteresis') {
         return 'Sends received value message to the <b>Rise</b> output if it crosses the <b>Max</b> property value and ' +
                'to the <b>Fall</b> output if it crosses the <b>Min</b> property value. Also, values of min and max ' +
-               'properties could be overridden with values from <b>Min</b> and <b>Max</b> values';
+               'properties could be overridden with values from <b>Min</b> and <b>Max</b> inputs';
     }
     if (component == 'Save setting') {
         return 'Saves received string value to the key-value map stored at the EEPROM memory that is persisted across ' +
