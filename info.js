@@ -48,6 +48,11 @@ function getInfo(component) {
                'parameters of Espurna firmware (such as hostname, ssid) so this component could be used to retrieve ' +
                'system settings';
     }
+    if (component == 'Terminal') {
+        return 'Executes terminal command when any input is received on <b>Run</b> input. Configured command could be ' +
+               'changed to any string received on <b>Command</b> input.<br/>' +
+               'Useful commands are: RESET, SET, WIFI.SCAN, etc'
+    }
     if (component == 'Light') {
         return 'Changes color and brightness of the light. <br/> Usually, value for the <b>Color</b> input is RGB value ' +
                'having format #RRGGBB or #RRGGBBWW to change warmness of color using WW part from warm (00) to cold (FF). ' +
