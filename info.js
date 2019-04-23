@@ -51,7 +51,7 @@ function getInfo(component) {
     if (component == 'Terminal') {
         return 'Executes terminal command when any input is received on <b>Run</b> input. Configured command could be ' +
                'changed to any string received on <b>Command</b> input.<br/>' +
-               'Useful commands are: RESET, SET, WIFI.SCAN, etc'
+               'Useful commands are: RESET, SET, WIFI.SCAN, etc';
     }
     if (component == 'Light') {
         return 'Changes color and brightness of the light. <br/> Usually, value for the <b>Color</b> input is RGB value ' +
